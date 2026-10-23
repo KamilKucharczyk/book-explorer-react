@@ -6,6 +6,11 @@ const ToRead = () => {
   const allBooks = toRead.length;
   const readBooks = toRead.filter((item) => item.read === true).length;
   const notRead = allBooks - readBooks;
+  let progress = 0;
+  if (allBooks !== 0) {
+    progress = (readBooks / allBooks) * 100;
+  }
+
   return (
     <div>
       <ul>
@@ -24,6 +29,7 @@ const ToRead = () => {
       <p>All books: {allBooks}</p>
       <p>Read: {readBooks}</p>
       <p>Not read: {notRead}</p>
+      <p>Progress: {progress} %</p>
     </div>
   );
 };
