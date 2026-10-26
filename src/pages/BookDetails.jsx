@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useFavorites from "../hooks/useFavorites";
+import useToRead from "../hooks/useToRead";
 
 const API_DETAILS_URL = "https://openlibrary.org/works/";
 const COVER_URL = "https://covers.openlibrary.org/b/id/";
@@ -13,6 +14,7 @@ const BookDetails = () => {
   const location = useLocation();
   const { id } = useParams();
   const { addFavorite } = useFavorites();
+  const { addToRead } = useToRead();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -43,7 +45,9 @@ const BookDetails = () => {
     addFavorite(details);
   };
 
-  const handleAddToRead = () => {};
+  const handleAddToRead = () => {
+    addToRead(details);
+  };
 
   if (loading) {
     return <p>Loading...</p>;

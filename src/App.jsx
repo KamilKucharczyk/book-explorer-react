@@ -9,31 +9,37 @@ import Favorites from "./pages/Favorites";
 import ToRead from "./pages/ToRead";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import FavoritesProvider from "./context/FavoritesContext";
+import ToReadProvider from "./context/ToReadContext";
 
 const App = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to="books" />} />
-            <Route path="books" element={<Books />} />
-            <Route path="books/:id" element={<BookDetails />} />
-            <Route path="favorites" element={<Favorites />} />
-            <Route path="to-read" element={<ToRead />} />
-            <Route path="profile" element={<Profile />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <FavoritesProvider>
+        <ToReadProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="books" />} />
+                <Route path="books" element={<Books />} />
+                <Route path="books/:id" element={<BookDetails />} />
+                <Route path="favorites" element={<Favorites />} />
+                <Route path="to-read" element={<ToRead />} />
+                <Route path="profile" element={<Profile />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ToReadProvider>
+      </FavoritesProvider>
     </AuthProvider>
   );
 };

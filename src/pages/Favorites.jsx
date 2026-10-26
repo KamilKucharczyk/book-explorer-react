@@ -12,7 +12,7 @@ const Favorites = () => {
       <h1>Favorites</h1>
       <ul>
         {favorites.map((favorite) => {
-          const bookId = favorite.key.split("/").pop();
+          const bookId = favorite.key?.split("/").pop();
           return (
             <li key={favorite.key}>
               <p>Title: {favorite.title}</p>

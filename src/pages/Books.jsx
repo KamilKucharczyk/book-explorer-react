@@ -17,8 +17,17 @@ const Books = () => {
   const page = Number(searchParams.get("page")) || 1;
   const limit = 10;
 
+  const [inputValue, setInputValue] = useState(search);
+
   useEffect(() => {
     const fetchBooks = async () => {
+      if (!search) {
+        setError("");
+        setBooks([]);
+        setTotalResults(0);
+        setLoading(false);
+        return;
+      }
       try {
         setError("");
         setLoading(true);
@@ -42,11 +51,8 @@ const Books = () => {
   }, [search, page]);
 
   const filteredBooks = books.filter((book) => {
-    const matchesSearch = book.title
-      .toLowerCase()
-      .includes(search.toLowerCase());
     const matchesSelect = language ? book.language?.includes(language) : true;
-    return matchesSearch && matchesSelect;
+    return matchesSelect;
   });
 
   const sortedBooks = [...filteredBooks];
@@ -62,12 +68,14 @@ const Books = () => {
   }
 
   const handleSearch = (e) => {
-    const searchValue = e.target.value;
-    if (searchValue) {
-      setSearchParams({ search: searchValue, language, sort, page: 1 });
-    } else {
-      setSearchParams({ language, sort, page: 1 });
-    }
+    e.preventDefault();
+
+    setSearchParams({
+      search: inputValue,
+      language,
+      sort,
+      page: 1,
+    });
   };
 
   const handleSelect = (e) => {
@@ -105,37 +113,35 @@ const Books = () => {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>{error}</p>;
-  }
-  if (books.length === 0) {
-    return <p>No books found</p>;
-  }
   return (
     <div>
       <h1>Books explorer</h1>
-      <input
-        type="text"
-        name="search"
-        value={search}
-        onChange={handleSearch}
-        placeholder="search title"
-      />
-      <select value={language} onChange={handleSelect}>
-        <option value="">All</option>
-        <option value="eng">English</option>
-        <option value="pol">Polish</option>
-        <option value="ger">German</option>
-        <option value="fre">French</option>
-      </select>
-      <select value={sort} onChange={handleSort}>
-        <option value="">Default</option>
-        <option value="A-Z">A-Z</option>
-        <option value="Z-A">Z-A</option>
-        <option value="Oldest">Oldest</option>
-        <option value="Newest">Newest</option>
-      </select>
-      {sortedBooks.length === 0 && <p>No books found</p>}
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          name="search"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="search title"
+        />
+        <select value={language} onChange={handleSelect}>
+          <option value="">All</option>
+          <option value="eng">English</option>
+          <option value="pol">Polish</option>
+          <option value="ger">German</option>
+          <option value="fre">French</option>
+        </select>
+        <select value={sort} onChange={handleSort}>
+          <option value="">Default</option>
+          <option value="A-Z">A-Z</option>
+          <option value="Z-A">Z-A</option>
+          <option value="Oldest">Oldest</option>
+          <option value="Newest">Newest</option>
+        </select>
+        <button type="submit">Search</button>
+      </form>
+      {!search && <p>Enter a book title to search</p>}
+      {search && sortedBooks.length === 0 && !error && <p>No books found</p>}
       <ul>
         {sortedBooks.map((sortedBook) => (
           <li key={sortedBook.key}>
@@ -143,6 +149,7 @@ const Books = () => {
           </li>
         ))}
       </ul>
+      {error && <p>{error}</p>}
       <p>Page: {page}</p>
       <button type="button" onClick={handlePrev} disabled={page === 1}>
         Prev
